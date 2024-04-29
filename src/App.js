@@ -1,3 +1,26 @@
+/*
+Made by Tian Breznik, 20th of April 2024
+Running on React!
+
+blink - look into the website's eyes!
+
+A website connected to many ends of the infrastructure of the 
+internet via the threads of APIs: war reporting, sales ads, graphic sexual displays,
+memes, random images, current articles, analytics in graphs, gifs, commercials, etc.,
+are presented in the form of engineered over-fulfilled functional glitches. A computer
+glitch imitates an error that occurs naturally. The human-like tic gives the website
+a characteristic of liveliness, anthropomorphizing it into a chaotic, anxious blink out
+of and into reality. It is mimicking the user’s anxiety of being on the internet, self-aware
+of it’s role in adding to it. Both the user and the website become victims of the frequency 
+at which the infrastructure of the internet refreshes.
+
+The website is built in react around components. It will grow in the future with more and more
+APIs being connected to it, as the website lives on.
+
+See it running at:
+https://tianbreznik.github.io/blinkeye/
+*/
+
 import './App.css';
 import { React, useState, useEffect, useRef } from 'react';
 import { Gif } from '@giphy/react-components'
@@ -5,13 +28,14 @@ import { GiphyFetch } from '@giphy/js-fetch-api'
 import { useAsync } from "react-async-hook";
 import AdSense from 'react-adsense';
 import ImgurComponent from './Imgur';
-import EbayComponent from './Ebay';
+// import EbayComponent from './Ebay';
 import * as tf from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-backend-webgl';
 import * as faceLandmarksDetection from '@tensorflow-models/face-landmarks-detection';
 import * as facemesh from "@tensorflow-models/facemesh";
 import Webcam from "react-webcam";
 
+//face landmarks detection variables
 const EAR_THRESHOLD = 0.30;
 let event;
 let blinkCount = 0;
@@ -22,12 +46,13 @@ const detectorConfig = {
   runtime: 'mediapipe', // or 'tfjs'
   solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh',
 }
-// const detector = await faceLandmarksDetection.createDetector(model, detectorConfig);
+
 const network = await facemesh.load({
   inputResolution: { width: 720, height: 500 },
   scale: 0.8
 });
 
+//not used
 const keyword_extractor = require("keyword-extractor");
 
 
@@ -35,7 +60,7 @@ function getRandomArbitrary(min, max) {
   return Math.random() * (max - min) + min;
 }
 
-//Euclidean distance between two 
+//distance between upper and lower eyelid
 function getEAR(upper, lower) {
   function getEucledianDistance(x1, y1, x2, y2) {
     return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
@@ -55,14 +80,9 @@ function getEAR(upper, lower) {
 }
 
 async function startPrediciton(video) {
-  // console.log("prediction");
+
   // Sending video to model for prediction
   const predictions = await network.estimateFaces(video);
-  //console.log(predictions[0].annotations.noseTip[0][1]);
-
-  //model.estimateFaces({
-  //  input: video,
-  //});
 
   if (predictions.length > 0) {
     predictions.forEach((prediction) => {
@@ -74,15 +94,13 @@ async function startPrediciton(video) {
       const lowerLeft = prediction.annotations.leftEyeUpper0;
       const upperLeft = prediction.annotations.leftEyeLower0;
       const leftEAR = getEAR(upperLeft, lowerLeft);
-      // if(leftEAR < 0.3){
-      //   console.log(leftEAR);
-      // }
-      // True if the eye is closed
+ 
+      // True if an eye is closed
       const blinked = leftEAR <= EAR_THRESHOLD && rightEAR <= EAR_THRESHOLD;
 
       // Determine how long you blinked
       if (blinked) {
-        //console.log("blinked!!!!");
+        console.log("blinked!!!!");
         event = {
           shortBlink: false,
           longBlink: false,
@@ -100,9 +118,11 @@ async function startPrediciton(video) {
   return event;
 }
 
+//not used
 const keywords = [];
 
 function App() {
+  //setting up react state and helper functions
   const [currentData, setCurrentData] = useState(0)
   const [currentDataFive, setCurrentDataFive] = useState(5)
   const [vintedcurrentData, setVintedCurrentData] = useState(0)
@@ -119,6 +139,7 @@ function App() {
   const canvasReference = useRef(null);
 
 
+  //google news request setup
   const apikey = process.env.REACT_APP_GNEWS_KEY;
   const category = 'world';
   const url = 'https://gnews.io/api/v4/top-headlines?category=' + category + '&lang=en&country=us&max=50&apikey=' + apikey;
@@ -126,6 +147,7 @@ function App() {
    fetch(url).then(result => result.json()).then(alldata => setData(alldata.articles)).catch(error => console.log(error.message))
   }, [])
 
+  //vinted api request setup
   const urlvinted = 'https://vinted3.p.rapidapi.com/getSearch?country=us&page=1&order=newest_first';
   const options = {
     method: 'GET',
@@ -137,6 +159,7 @@ function App() {
     }
   };
 
+  //fetch vinted feed offers 
   useAsync(async () => {
     try {
       const response = await fetch(urlvinted, options);
@@ -156,8 +179,9 @@ function App() {
   // }, [])
   // console.log(ebaydata[0]);
 
+  //function that updates the indices for traversing the arrays of data
+  //called asynchronously on every update of the page - click or blink
   async function nextData() {
-    console.log("next data lets go");
     setBlink("hidden");
     setTimeout(() => {
       setBlink("visible");
@@ -177,8 +201,10 @@ function App() {
     setClickedVintedData([...clickedVintedData, vintedcurrentData]);
   }
 
+  //giphy object
   const giphyFetch = new GiphyFetch(process.env.REACT_APP_GIPHY_KEY)
 
+  //giphy request 
   function GifDemo() {
     const [gif, setGif] = useState(null);
 
@@ -192,8 +218,7 @@ function App() {
 
     useAsync(async () => {
         
-      // console.log(extraction_result[0]);
-      // const { data1 } = await giphyFetch.search('cute', {  tag: 'blink', sort: 'relevant', limit: 5, type: 'gifs' })
+      //pull random stickers from giphy
       const { data1 } = await giphyFetch.search(extraction_result[0], { sort: 'relevant', lang: 'es', limit: 10, type: 'stickers' })
       if(typeof data1 == "undefined"){
         //console.log("here");
@@ -201,22 +226,25 @@ function App() {
         setGif(data);
       }    
       else{
-        // console.log(data1);
-        // console.log("bla");
+        //populate the state with giphy results
         setGif(data1[0]);
       }   
       }, []);
+      //return the Giphy component!
     return gif && <Gif gif={gif} width={100} style={{left:getRandomArbitrary(-1, 1)*20 + "%",top:getRandomArbitrary(-1, 1)*35 + "%"}} backgroundColor='transparent' height={100} />;
   }
 
+  //callback for face landmarks prediction function
+  //a way to have it be continuosly invoked 
   const callbackcall = async () => {
     setInterval(() => {
       requestpredict();
     }, 100);
   };
 
+  //face landmarks prediction helper function
   const requestpredict = async () => {
-    //solve this later
+    //depending on fullness of the page, scroll down for half height
     if(document.querySelectorAll('.li').length%12==1){
       windowtop += window.innerHeight/2;
       window.scrollTo({top: windowtop, behavior: 'smooth'});
@@ -238,10 +266,11 @@ function App() {
         const result = await startPrediciton(video);
         // console.log(result);
         if (result) {
+         //if blink detected, update page
          if (result.longBlink) {
-            //await nextData();
+            await nextData();
           } else if (result.shortBlink) {
-            //await nextData();
+            await nextData();
           }
           else{
             return;
@@ -250,8 +279,10 @@ function App() {
       }
   }
 
+  //start detection
   callbackcall();
 
+  //return the contents of the page, updates with every update of the state (nextData)
   return (
     <div className="App">
       <Webcam

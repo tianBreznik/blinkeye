@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.fb4aec1f.css",
-    "main.js": "/static/js/main.d6edadbb.js",
+    "main.js": "/static/js/main.fe2dc14c.js",
     "static/js/453.b3b09186.chunk.js": "/static/js/453.b3b09186.chunk.js",
     "static/media/Fornire-Light.otf": "/static/media/Fornire-Light.becac9f12166f0733aab.otf",
     "static/media/Heathergreen.otf": "/static/media/Heathergreen.6bd4d9044f76dd2b2ed3.otf",
@@ -9,15 +9,14 @@
     "static/media/steelfish rg.otf": "/static/media/steelfish rg.09ba69872e45cdf44c84.otf",
     "static/media/Newsworthy.otf": "/static/media/Newsworthy.1e32599e5b55ccfaf180.otf",
     "static/media/Sanshiro-Black.ttf": "/static/media/Sanshiro-Black.080fba22febb553d6e08.ttf",
-    "static/media/ebay.png": "/static/media/ebay.203751502293c8278d5b.png",
     "static/media/AsikueTrial-Regular.otf": "/static/media/AsikueTrial-Regular.28d3194ce753bffcb86d.otf",
     "index.html": "/index.html",
     "main.fb4aec1f.css.map": "/static/css/main.fb4aec1f.css.map",
-    "main.d6edadbb.js.map": "/static/js/main.d6edadbb.js.map",
+    "main.fe2dc14c.js.map": "/static/js/main.fe2dc14c.js.map",
     "453.b3b09186.chunk.js.map": "/static/js/453.b3b09186.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.fb4aec1f.css",
-    "static/js/main.d6edadbb.js"
+    "static/js/main.fe2dc14c.js"
   ]
 }

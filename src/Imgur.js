@@ -33,6 +33,7 @@ const ImgurComponent = () => {
         randomString();
      });
 
+    //return imgur component
     return (
         <div key={img}>
             <img className="imgurimg" src={img}></img>
